@@ -88,6 +88,8 @@ class Poltergeist.WebPage
 
     if @requestId == response.id
       if response.redirectURL
+        # HACK: Discuss and document it (TODO)
+        @removeTempHeaders()
         @redirectURL = response.redirectURL
       else
         @_statusCode      = response.status
