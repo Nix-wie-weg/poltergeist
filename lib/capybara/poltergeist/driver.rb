@@ -192,7 +192,8 @@ module Capybara::Poltergeist
 
     def add_header(name, value, options = {})
       permanent = options.fetch(:permanent, true)
-      browser.add_header({ name => value }, permanent)
+      for_followed_redirect = options.fetch(:for_followed_redirect, true)
+      browser.add_header({ name => value }, permanent, for_followed_redirect)
     end
 
     def response_headers

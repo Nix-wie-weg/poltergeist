@@ -16,6 +16,7 @@ class Poltergeist.WebPage
     @_errors         = []
     @_networkTraffic = {}
     @_temp_headers   = {}
+    @_temp_not_for_redirect_headers = {}
     @frames          = []
 
     for callback in WebPage.CALLBACKS
@@ -34,8 +35,9 @@ class Poltergeist.WebPage
   onInitializedNative: ->
     @_source = null
     @injectAgent()
-    this.removeTempHeaders()
-    this.setScrollPosition(left: 0, top: 0)
+    @removeTempHeaders()
+    @removeTempNotForRedirectHeaders()
+    @setScrollPosition(left: 0, top: 0)
 
   injectAgent: ->
     if @native.evaluate(-> typeof __poltergeist) == "undefined"
@@ -89,7 +91,7 @@ class Poltergeist.WebPage
     if @requestId == response.id
       if response.redirectURL
         # HACK: Discuss and document it (TODO)
-        @removeTempHeaders()
+        @removeTempNotForRedirectHeaders()
         @redirectURL = response.redirectURL
       else
         @_statusCode      = response.status
@@ -168,9 +170,19 @@ class Poltergeist.WebPage
     for name, value of header
       @_temp_headers[name] = value
 
+  addTempNotForRedirectHeader(header) ->
+    for name, value of header
+      @_temp_not_for_redirect_headers[name] = value
+
   removeTempHeaders: ->
     allHeaders = this.getCustomHeaders()
     for name, value of @_temp_headers
+      delete allHeaders[name]
+    this.setCustomHeaders(allHeaders)
+
+  removeTempNotForRedirectHeaders: ->
+    allHeaders = this.getCustomHeaders()
+    for name, value of @_temp_not_for_redirect_headers
       delete allHeaders[name]
     this.setCustomHeaders(allHeaders)
 
