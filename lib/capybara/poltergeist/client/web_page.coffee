@@ -170,7 +170,7 @@ class Poltergeist.WebPage
     for name, value of header
       @_temp_headers[name] = value
 
-  addTempNotForRedirectHeader(header) ->
+  addTempNotForRedirectHeader: (header) ->
     for name, value of header
       @_temp_not_for_redirect_headers[name] = value
 
