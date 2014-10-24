@@ -154,6 +154,7 @@ module Capybara::Poltergeist
     end
 
     def reset
+      evaluate('window.localStorage.clear()') if current_url != 'about:blank'
       command 'reset'
     end
 
