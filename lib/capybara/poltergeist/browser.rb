@@ -154,6 +154,12 @@ module Capybara::Poltergeist
     end
 
     def reset
+      # After each test run Poltergeist calls the reset method to ensure
+      # a clean environment for the next run. Only cleaning local storage was
+      # missing from the equation. Furthermore PhantomJS has a horrible bug
+      # when pruning its localstorage files. To ensure a clean state right off
+      # the first test run we delete all localstorage files in phantomjs tmp
+      # directory whenever a spec file runs in our test suite.
       evaluate('window.localStorage.clear()') if current_url != 'about:blank'
       command 'reset'
     end
